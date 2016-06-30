@@ -1,0 +1,13 @@
+dist/electron			usr/share/electron/
+dist/content_shell.pak		usr/share/electron/
+dist/icudtl.dat			usr/share/electron/
+dist/libffmpeg.so		usr/share/electron/
+dist/libnode.so			usr/share/electron/
+dist/natives_blob.bin		usr/share/electron/
+dist/snapshot_blob.bin		usr/share/electron/
+dist/LICENSE			usr/share/electron/
+dist/LICENSES.chromium.html	usr/share/electron/
+dist/version			usr/share/electron/
+dist/resources/electron.asar	usr/share/electron/resources/
+dist/resources/default_app.asar	usr/share/electron/resources/
+dist/locales/*.pak		usr/share/electron/locales/
