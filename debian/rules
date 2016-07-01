@@ -16,6 +16,9 @@
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+PKD  = $(abspath $(dir $(MAKEFILE_LIST)))
+PKG  = $(shell dpkg-parsechangelog -l$(PKD)/changelog --show-field=Source)
+VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
 
 %:
 	dh $@
@@ -29,3 +32,12 @@ override_dh_auto_build:
 
 #override_dh_auto_clean:
 #	python script/clean.py
+
+get-orig-source:
+	if [ -d $(PKG)-$(VER) ]; then rm -rf $(PKG)-$(VER); fi
+	@echo "Cloning git repo..."
+	git clone --branch v$(VER) --depth 1 https://github.com/electron/electron.git $(PKG)-$(VER)
+	@echo "Compress..."
+	tar czf ../$(PKG)_$(VER).orig.tar.gz $(PKG)-$(VER)
+	@echo "Cleanup..."
+	rm -rf $(PKG)-$(VER)
