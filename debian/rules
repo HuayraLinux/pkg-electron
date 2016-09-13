@@ -19,16 +19,28 @@ export DH_OPTIONS
 PKD  = $(abspath $(dir $(MAKEFILE_LIST)))
 PKG  = $(shell dpkg-parsechangelog -l$(PKD)/changelog --show-field=Source)
 VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
+ARCH = $(shell dpkg --print-architecture)
+
+ifeq ($(ARCH), i386)
+    export UPSTREAM_ARCH=ia32
+else
+    export UPSTREAM_ARCH=x64
+endif
+
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	python script/bootstrap.py -y -v
+#	python script/bootstrap.py -y -v -u http://localhost:7777 --target_arch $(UPSTREAM_ARCH)
+	python script/bootstrap.py -y -v --target_arch $(UPSTREAM_ARCH)
 	
 override_dh_auto_build:
 	python script/build.py -c R
 	python script/create-dist.py
+
+override_dh_shlibdeps:
+	echo "override shlibs"
 
 #override_dh_auto_clean:
 #	python script/clean.py
