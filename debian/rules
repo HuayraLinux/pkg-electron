@@ -1,25 +1,11 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-#
-# This file was originally written by Joey Hess and Craig Small.
-# As a special exception, when this file is copied by dh-make into a
-# dh-make output file, you may use that output file without restriction.
-# This special exception was added by Craig Small in version 0.37 of dh-make.
-#
-# Modified to make a template file for a multi-binary package with separated
-# build-arch and build-indep targets  by Bill Allombert 2001
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
-
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
-
-PKD  = $(abspath $(dir $(MAKEFILE_LIST)))
-PKG  = $(shell dpkg-parsechangelog -l$(PKD)/changelog --show-field=Source)
-VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
-ARCH = $(shell dpkg --print-architecture)
+export DH_VERBOSE=1
+export PKG = $(word 2,$(shell dpkg-parsechangelog | grep ^Source))
+export ARCH=$(shell dpkg-architecture -qDEB_TARGET_ARCH)
+export CURVER=$(shell dpkg-parsechangelog -SVersion| sed -re 's,.([0-9])+$$,,')
+export OS=$(shell dpkg-architecture -qDEB_TARGET_ARCH_OS)
 
 ifeq ($(ARCH), i386)
     export UPSTREAM_ARCH=ia32
@@ -27,29 +13,16 @@ else
     export UPSTREAM_ARCH=x64
 endif
 
+export ELECTRON_BASE = $(PKG)-v$(CURVER)-$(OS)-$(UPSTREAM_ARCH)
+export ELECTRON_TGZ = $(ELECTRON_BASE).tar.gz
+export ELECTRON_VER = $(CURVER)-$(OS)-$(UPSTREAM_ARCH)
 
 %:
 	dh $@
 
-override_dh_auto_configure:
-#	python script/bootstrap.py -y -v -u http://localhost:7777 --target_arch $(UPSTREAM_ARCH)
-	python script/bootstrap.py -y -v --target_arch $(UPSTREAM_ARCH)
-	
-override_dh_auto_build:
-	python script/build.py -c R
-	python script/create-dist.py
-
 override_dh_shlibdeps:
-	echo "override shlibs"
-
-#override_dh_auto_clean:
-#	python script/clean.py
+	echo "override"
 
 get-orig-source:
-	if [ -d $(PKG)-$(VER) ]; then rm -rf $(PKG)-$(VER); fi
-	@echo "Cloning git repo..."
-	git clone --branch v$(VER) --depth 1 https://github.com/electron/electron.git $(PKG)-$(VER)
-	@echo "Compress..."
-	tar czf ../$(PKG)_$(VER).orig.tar.gz $(PKG)-$(VER)
-	@echo "Cleanup..."
-	rm -rf $(PKG)-$(VER)
+    wget https://github.com/electron/electron/releases/download/v1.4.0/electron-v1.4.0-linux-x64.zip
+	uscan --noconf --verbose --rename --destdir=$(CURDIR)/packages/ --check-dirname-level=0 --force-download --download-version $(ELECTRON_VER)

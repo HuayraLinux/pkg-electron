@@ -1,0 +1,3 @@
+version=3
+
+https://github.com/electron/electron/releases/electron-v(.+)\.zip
