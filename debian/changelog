@@ -1,3 +1,9 @@
+electron (5.0.2-linux-x64-1) UNRELEASED; urgency=medium
+
+  * version 5.0.2
+
+ -- Fernando Toledo <ragnarok@docksud.com.ar>  Wed, 24 Oct 2018 16:11:52 -0300
+
 electron (1.4.0.1) unstable; urgency=medium
 
   * nueva version 1.4.0
