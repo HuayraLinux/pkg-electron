@@ -1,0 +1,8 @@
+#!/bin/sh 
+set -e
+
+chmod 4755 /usr/share/electron/chrome-sandbox
+
+#DEBHELPER#
+
+

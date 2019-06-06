@@ -1,8 +1,10 @@
-electron			usr/share/electron/
+electron		usr/share/electron/
 *.pak			usr/share/electron/
 *.dat			usr/share/electron/
-*.so		usr/share/electron/
-*.bin		usr/share/electron/
+*.so			usr/share/electron/
+*.bin			usr/share/electron/
 version			usr/share/electron/
 locales/*.pak		usr/share/electron/locales/
-resources/*.asar   usr/share/electron/resources/
+resources/*.asar   	usr/share/electron/resources/
+swiftshader/*.so   	usr/share/electron/swiftshader/
+chrome-sandbox		usr/share/electron/
